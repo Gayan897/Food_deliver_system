@@ -1,5 +1,7 @@
 package com.fooddelivery.food_delivery.config;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +17,7 @@ import java.util.Set;
 public class JwtProvider {
     SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
 
-    private String generateToken(Authentication auth){
+    public String generateToken(Authentication auth){
         Collection<? extends GrantedAuthority>authorities=auth.getAuthorities();
         String roles = populateAuthorities(authorities);
 
@@ -26,7 +28,15 @@ public class JwtProvider {
                 .signWith(key)
                 .compact();
 
-        return null;
+        return jwt;
+    }
+
+    public String getEmailFromJwtToken(String jwt){
+        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
+
+        String email = String.valueOf(claims.get("email"));
+
+        return email;
     }
 
     private String populateAuthorities(Collection<? extends GrantedAuthority> authorities) {
