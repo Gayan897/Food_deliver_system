@@ -16,8 +16,10 @@ import java.util.List;
 @NoArgsConstructor
 
 public class Restaurant {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
 
     @OneToOne
     private User owner;

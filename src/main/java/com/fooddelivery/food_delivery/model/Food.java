@@ -1,11 +1,10 @@
 package com.fooddelivery.food_delivery.model;
 
 import jakarta.persistence.*;
-import jdk.jfr.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class Food {
     private List<IngredientsItem> ingredients=new ArrayList<>();
 
 
-    private Data creationDate;
+    private Date creationDate;
 
 
 }

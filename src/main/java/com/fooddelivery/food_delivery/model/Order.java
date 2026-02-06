@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -31,7 +32,7 @@ public class Order {
 
     private String orderStatus;
 
-    private Data createdAt;
+    private Date createdAt;
 
     @ManyToOne
     private Address deliveryAddress;

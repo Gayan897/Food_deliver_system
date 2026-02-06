@@ -1,5 +1,6 @@
 package com.fooddelivery.food_delivery.controller;
 
+import com.fooddelivery.food_delivery.model.USER_ROLE;
 import com.fooddelivery.food_delivery.request.LoginRequest;
 import com.fooddelivery.food_delivery.response.AuthResponse;
 import com.fooddelivery.food_delivery.config.JwtProvider;
@@ -70,32 +71,30 @@ public class AuthController {
         AuthResponse authResponse=new AuthResponse();
         authResponse.setJwt(jwt);
         authResponse.setMessage("Register success");
-        authResponse.setRole(savedUser.getRole());
+        authResponse.setRole(saveUser.getRole());
 
         return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
     }
 
+    @PostMapping("/signin")
     public ResponseEntity<AuthResponse> signin(@RequestBody LoginRequest req) {
 
         String username = req.getEmail();
         String password = req.getPassword();
 
         Authentication authentication = authenticate(username, password);
+
         Collection<? extends GrantedAuthority>authorities=authentication.getAuthorities();
         String role=authorities.isEmpty()?null:authorities.iterator().next().getAuthority();
+
         String jwt=jwtProvider.generateToken(authentication);
 
         AuthResponse authResponse=new AuthResponse();
         authResponse.setJwt(jwt);
         authResponse.setMessage("Register success");
-
-
-
-      //  authResponse.setRole(savedUser.getRole());
+        authResponse.setRole(USER_ROLE.valueOf(role));
 
         return new ResponseEntity<>(authResponse, HttpStatus.OK);
-
-        return null;
     }
 
     private Authentication authenticate(String username, String password) {

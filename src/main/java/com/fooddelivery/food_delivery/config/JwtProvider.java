@@ -21,7 +21,7 @@ public class JwtProvider {
         Collection<? extends GrantedAuthority>authorities=auth.getAuthorities();
         String roles = populateAuthorities(authorities);
 
-        String jwt = Jwts.builder().setIssuedAt(new Date(()))
+        String jwt = Jwts.builder().setIssuedAt(new Date())
                 .setExpiration((new Date(new Date().getTime()+8640000)))
                 .claim("email",auth.getName())
                 .claim("authorities",roles)
@@ -45,6 +45,6 @@ public class JwtProvider {
         for(GrantedAuthority authority:authorities){
             auths.add(authority.getAuthority());
         }
-        return String.joint(",",auths);
+        return String.join(",",auths);
     }
 }
