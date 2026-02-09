@@ -3,7 +3,6 @@ package com.fooddelivery.food_delivery.controller;
 import com.fooddelivery.food_delivery.dto.RestaurantDto;
 import com.fooddelivery.food_delivery.model.Restaurant;
 import com.fooddelivery.food_delivery.model.User;
-import com.fooddelivery.food_delivery.request.CreateRestaurantRequest;
 import com.fooddelivery.food_delivery.service.RestaurantService;
 import com.fooddelivery.food_delivery.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -25,14 +25,14 @@ public class RestaurantController {
 
 
     @GetMapping("/search")
-    public ResponseEntity<Restaurant> createRestaurant(
-            @RequestBody CreateRestaurantRequest req,
+    public ResponseEntity<List<Restaurant>> searchRestaurant(
+            @RequestHeader("Authorization") String jwt,
             @RequestParam String keyword
     )throws Exception{
         User user=userService.findUserByJwtToken(jwt);
 
         List<Restaurant> restaurant=restaurantService.searchRestaurant(keyword);
-        return new ResponseEntity<>(restaurant, HttpStatus.CREATED);
+        return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
 
     @GetMapping()
@@ -46,18 +46,18 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Restaurant> findRestaurantById(
+    public ResponseEntity<List<Restaurant>> findRestaurantById(
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long id
     )throws Exception{
         User user=userService.findUserByJwtToken(jwt);
 
-        List<Restaurant> restaurant=restaurantService.findRestaurantById(id);
+        List<Restaurant> restaurant= Collections.singletonList(restaurantService.findRestaurantById(id));
         return new ResponseEntity<>(restaurant, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}/add-favourites")
-    public ResponseEntity<Restaurant> addToFavourites(
+    public ResponseEntity<RestaurantDto> addToFavourites(
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long id
     )throws Exception{
@@ -66,5 +66,6 @@ public class RestaurantController {
         RestaurantDto restaurant=restaurantService.addToFavorites(id,user);
         return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
+
 
 }

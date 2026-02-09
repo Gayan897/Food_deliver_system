@@ -1,5 +1,6 @@
 package com.fooddelivery.food_delivery.controller;
 
+import com.fooddelivery.food_delivery.dto.RestaurantDto;
 import com.fooddelivery.food_delivery.model.Restaurant;
 import com.fooddelivery.food_delivery.model.User;
 import com.fooddelivery.food_delivery.request.CreateRestaurantRequest;
@@ -41,13 +42,13 @@ public class AdminRestaurantController {
             )throws Exception{
         User user=userService.findUserByJwtToken(jwt);
 
-        Restaurant restaurant=restaurantService.updateRestaurant(id,user);
+        Restaurant restaurant=restaurantService.updateRestaurant(id,req);
         return new ResponseEntity<>(restaurant, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Restaurant> deleteRestaurant(
-            @RequestBody CreateRestaurantRequest req,
+    public ResponseEntity<MessageResponse> deleteRestaurant(
+
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long id
             )throws Exception{
@@ -63,7 +64,7 @@ public class AdminRestaurantController {
 
     @PutMapping("/{id}/status")
     public ResponseEntity<Restaurant> updateRestaurant(
-            @RequestBody CreateRestaurantRequest req,
+
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long id
     )throws Exception{
@@ -91,4 +92,17 @@ public class AdminRestaurantController {
         res.setMessage("Restaurant deleted successfully");
         return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
+
+    @GetMapping("/user")
+    public ResponseEntity<Restaurant> findRestaurantByUserId(
+
+            @RequestHeader("Authorization") String jwt
+
+    )throws Exception{
+        User user=userService.findUserByJwtToken(jwt);
+
+        Restaurant restaurant=restaurantService.getRestaurantByUserId(user.getId());
+        return new ResponseEntity<>(restaurant, HttpStatus.OK);
+    }
+
 }

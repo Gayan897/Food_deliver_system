@@ -8,6 +8,7 @@ import com.fooddelivery.food_delivery.repository.AddressRepository;
 import com.fooddelivery.food_delivery.repository.RestaurantRepository;
 import com.fooddelivery.food_delivery.repository.UserRepository;
 import com.fooddelivery.food_delivery.request.CreateRestaurantRequest;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,9 @@ public class RestaurantServiceImpl implements RestaurantService{
 
     @Autowired
     private UserRepository userRepository;
+
+
+
 
     @Override
     public Restaurant createRestaurant(CreateRestaurantRequest req, User user) {
@@ -48,7 +52,7 @@ public class RestaurantServiceImpl implements RestaurantService{
     }
 
     @Override
-    public Restaurant updateRestaurant(Long restaurantId, CreateRestaurantRequest updateRestaurant) throws Exception {
+    public Restaurant updateRestaurant(Long restaurantId, CreateRestaurantRequest updatedRestaurant) throws Exception {
         Restaurant restaurant=findRestaurantById(restaurantId);
 
         if(restaurant.getCuisineType()!=null){
@@ -112,10 +116,21 @@ public class RestaurantServiceImpl implements RestaurantService{
         dto.setTitle(restaurant.getName());
         dto.setId(restaurantId);
 
-        if(user.getFavourites().contains(dto)){
-            user.getFavourites().remove(dto);
+        boolean isFavourited = false;
+        List<RestaurantDto> favorites = user.getFavourites();
+        for (RestaurantDto favorite : favorites){
+            if(favorite.getId().equals(restaurantId)){
+                isFavourited = true;
+                break;
+            }
         }
-        else user.getFavourites().add(dto);
+
+        if(isFavourited){
+            favorites.removeIf(favorite -> favorite.getId().equals(restaurantId));
+
+        }else {
+            favorites.add(dto);
+        }
 
         userRepository.save(user);
     return dto;

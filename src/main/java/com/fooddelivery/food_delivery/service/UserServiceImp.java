@@ -31,4 +31,9 @@ public class UserServiceImp implements UserService {
         }
         return user;
     }
+
+    @Override
+    public User findUserByJwtToken(String jwt) {
+        return null;
+    }
 }
