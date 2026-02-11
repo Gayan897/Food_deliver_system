@@ -19,4 +19,5 @@ public interface IngredientService {
 
     public IngredientsItem updateStock(Long id) throws Exception;
 
+   public IngredientsItem createIngredientItem(String name, Long restaurantId, Long categoryId);
 }

@@ -4,8 +4,10 @@ import com.fooddelivery.food_delivery.model.Category;
 import com.fooddelivery.food_delivery.model.Food;
 import com.fooddelivery.food_delivery.model.Restaurant;
 import com.fooddelivery.food_delivery.request.CreateFoodRequest;
+import lombok.Data;
 
 import java.util.List;
+
 
 public interface FoodService {
 

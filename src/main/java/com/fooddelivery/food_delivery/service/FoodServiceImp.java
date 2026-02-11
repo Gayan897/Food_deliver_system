@@ -98,7 +98,7 @@ public class FoodServiceImp implements FoodService{
     public Food findFoodById(Long foodId) throws Exception {
         Optional<Food> optionalFood=foodRepository.findById(foodId);
         if(optionalFood.isEmpty()){
-            throw new Exception("food not exist..........")
+            throw new Exception("food not exist..........");
         }
         return optionalFood.get();
     }
@@ -107,6 +107,6 @@ public class FoodServiceImp implements FoodService{
     public Food updateAvailabilityStatus(Long foodId) throws Exception {
         Food food = findFoodById(foodId);
         food.setAvailable(!food.isAvailable());
-       return foodRepository.save(food)
+       return foodRepository.save(food);
     }
 }
