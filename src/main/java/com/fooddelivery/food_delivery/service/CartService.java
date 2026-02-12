@@ -5,7 +5,7 @@ import com.fooddelivery.food_delivery.model.CartItem;
 import com.fooddelivery.food_delivery.request.AddCartItemRequest;
 import lombok.Data;
 
-@Data
+
 public interface CartService {
 
     public CartItem addItemToCart(AddCartItemRequest req, String jwt)throws Exception;
@@ -18,7 +18,7 @@ public interface CartService {
 
     public Cart findCartById(Long id)throws Exception;
 
-    public Cart findCartByUserId(Long userId)throws Exception;
+    public Cart findCartByUserId(String  jwt)throws Exception;
 
-    public Cart clearCart(Long userId)throws Exception;
+    public Cart clearCart(String jwt)throws Exception;
 }
