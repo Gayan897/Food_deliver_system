@@ -1,13 +1,12 @@
 package com.fooddelivery.food_delivery.service;
 
-import com.fooddelivery.food_delivery.model.Address;
-import com.fooddelivery.food_delivery.model.Order;
-import com.fooddelivery.food_delivery.model.User;
+import com.fooddelivery.food_delivery.model.*;
 import com.fooddelivery.food_delivery.repository.*;
 import com.fooddelivery.food_delivery.request.OrderRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -28,6 +27,9 @@ public class OrderServiceImp implements OrderService{
     @Autowired
     private RestaurantService restaurantService;
 
+    @Autowired
+    private CartService cartService;
+
     @Override
     public Order createOrder(OrderRequest order, User user) {
 
@@ -38,6 +40,18 @@ public class OrderServiceImp implements OrderService{
             user.getAddresses().add(savedAddress);
             userRepository.save(user);
         }
+        Restaurant restaurant = restaurantService.findRestaurantById(order.getRestaurantId());
+
+        Order createdOrder=new Order();
+        createdOrder.setCustomer(user);
+        createdOrder.setCreatedAt(new Date());
+        createdOrder.setOrderStatus("PENDING");
+        createdOrder.setDeliveryAddress(savedAddress);
+        createdOrder.setRestaurant(restaurant);
+
+        Cart cart= cartService.findCartByUserId(user.getId());
+
+
         return null;
     }
 
