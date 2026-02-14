@@ -6,15 +6,11 @@ import com.fooddelivery.food_delivery.model.Food;
 import com.fooddelivery.food_delivery.model.User;
 import com.fooddelivery.food_delivery.repository.CartItemRepository;
 import com.fooddelivery.food_delivery.repository.CartRepository;
-import com.fooddelivery.food_delivery.repository.FoodRepository;
 import com.fooddelivery.food_delivery.request.AddCartItemRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.HTML;
 import java.util.Optional;
-
-import static javax.swing.text.html.HTML.Tag.OL;
 
 @Service
 public class CartServiceImp implements CartService{
@@ -112,18 +108,22 @@ public class CartServiceImp implements CartService{
 
     @Override
     public Cart findCartByUserId(Long userId) throws Exception {
-   // User user = userService.findUserByJwtToken(jwt);
-        return CartRepository.findByCustomerId(userId);
+        Cart cart = CartRepository.findByCustomerId(userId);
+        cart.setTotal(calculateCartTotals(cart));
+        return cart;
     }
 
     @Override
-    public Cart clearCart(String jwt) throws Exception {
-        Cart cart=findCartByUserId(userId);
+    public Cart clearCart(Long userId) throws Exception {
+
+        Long userid = 0L;
+        Cart cart=findCartByUserId(userid);
 
         cart.getItems().clear();
 
         return cartRepository.save(cart);
     }
+
 
 
 }
