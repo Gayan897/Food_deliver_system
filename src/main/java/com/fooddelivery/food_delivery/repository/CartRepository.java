@@ -1,13 +1,13 @@
 package com.fooddelivery.food_delivery.repository;
 
-import com.fooddelivery.food_delivery.model.Cart;
+import com.fooddelivery.food_delivery.entity.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface CartRepository extends JpaRepository<Cart,Long> {
+import java.util.Optional;
 
-    public static Cart findByCustomerId(Long userId) {
-        return null;
-    }
-
-
+@Repository
+public interface CartRepository extends JpaRepository<Cart, Long> {
+    Optional<Cart> findByUserId(Long userId);
+    void deleteByUserId(Long userId);
 }

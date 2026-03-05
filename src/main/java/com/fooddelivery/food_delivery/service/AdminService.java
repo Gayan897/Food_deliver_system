@@ -1,4 +1,4 @@
 package com.fooddelivery.food_delivery.service;
 
-public class UserService {
+public class AdminService {
 }

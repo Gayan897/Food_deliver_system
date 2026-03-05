@@ -1,4 +1,4 @@
 package com.fooddelivery.food_delivery.controller;
 
-public class UserController {
+public class AddressController {
 }

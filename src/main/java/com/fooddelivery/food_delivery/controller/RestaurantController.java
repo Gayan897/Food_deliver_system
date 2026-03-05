@@ -1,71 +1,73 @@
 package com.fooddelivery.food_delivery.controller;
 
-import com.fooddelivery.food_delivery.dto.RestaurantDto;
-import com.fooddelivery.food_delivery.model.Restaurant;
-import com.fooddelivery.food_delivery.model.User;
+import com.fooddelivery.food_delivery.dto.RestaurantRequest;
+import com.fooddelivery.food_delivery.entity.Restaurant;
 import com.fooddelivery.food_delivery.service.RestaurantService;
-import com.fooddelivery.food_delivery.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/restaurants")
+@CrossOrigin(origins = "*")
 public class RestaurantController {
-
     @Autowired
     private RestaurantService restaurantService;
 
-    @Autowired
-    private UserService userService;
-
-
-    @GetMapping("/search")
-    public ResponseEntity<List<Restaurant>> searchRestaurant(
-            @RequestHeader("Authorization") String jwt,
-            @RequestParam String keyword
-    )throws Exception{
-        User user=userService.findUserByJwtToken(jwt);
-
-        List<Restaurant> restaurant=restaurantService.searchRestaurant(keyword);
-        return new ResponseEntity<>(restaurant, HttpStatus.OK);
-    }
-
-    @GetMapping()
-    public ResponseEntity<List<Restaurant>> getAllRestaurant(
-            @RequestHeader("Authorization") String jwt
-    )throws Exception{
-        User user=userService.findUserByJwtToken(jwt);
-
-        List<Restaurant> restaurant=restaurantService.getAllRestaurant();
-        return new ResponseEntity<>(restaurant, HttpStatus.OK);
+    @GetMapping
+    public ResponseEntity<List<Restaurant>> getAllRestaurants() {
+        return ResponseEntity.ok(restaurantService.getAllRestaurants());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<Restaurant>> findRestaurantById(
-            @RequestHeader("Authorization") String jwt,
-            @PathVariable Long id
-    )throws Exception{
-        User user=userService.findUserByJwtToken(jwt);
-
-        List<Restaurant> restaurant= Collections.singletonList(restaurantService.findRestaurantById(id));
-        return new ResponseEntity<>(restaurant, HttpStatus.CREATED);
+    public ResponseEntity<?> getRestaurantById(@PathVariable Long id) {
+        try {
+            Restaurant restaurant = restaurantService.getRestaurantById(id);
+            return ResponseEntity.ok(restaurant);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
-    @GetMapping("/{id}/add-favourites")
-    public ResponseEntity<RestaurantDto> addToFavourites(
-            @RequestHeader("Authorization") String jwt,
-            @PathVariable Long id
-    )throws Exception{
-        User user=userService.findUserByJwtToken(jwt);
-
-        RestaurantDto restaurant=restaurantService.addToFavorites(id,user);
-        return new ResponseEntity<>(restaurant, HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity<?> createRestaurant(@Valid @RequestBody RestaurantRequest request) {
+        try {
+            Restaurant restaurant = restaurantService.createRestaurant(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(restaurant);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateRestaurant(@PathVariable Long id,
+                                              @Valid @RequestBody RestaurantRequest request) {
+        try {
+            Restaurant restaurant = restaurantService.updateRestaurant(id, request);
+            return ResponseEntity.ok(restaurant);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Restaurant>> searchRestaurants(
+            @RequestParam(required = false) String cuisine,
+            @RequestParam(required = false) String location) {
+        return ResponseEntity.ok(restaurantService.searchRestaurants(cuisine, location));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteRestaurant(@PathVariable Long id) {
+        try {
+            restaurantService.deleteRestaurant(id);
+            return ResponseEntity.ok("Restaurant deactivated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }
