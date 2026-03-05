@@ -1,4 +1,4 @@
-package com.restaurant_service.Restaurant_Service_Application.dto;
+package com.fooddelivery.food_delivery.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

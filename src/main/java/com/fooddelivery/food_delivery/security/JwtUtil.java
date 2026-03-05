@@ -1,11 +1,10 @@
-package com.fooddelivery.food_delivery.utility;
+package com.fooddelivery.food_delivery.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +16,10 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
+    @org.springframework.beans.factory.annotation.Value("${jwt.secret}")
     private String secret;
 
+    @org.springframework.beans.factory.annotation.Value("${jwt.expiration}")
     private Long expiration;
 
     private Key getSigningKey() {

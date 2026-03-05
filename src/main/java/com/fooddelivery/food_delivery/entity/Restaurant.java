@@ -40,12 +40,13 @@ public class Restaurant {
     @Column(name = "closing_time")
     private LocalTime closingTime;
 
+    @Column(nullable = false)
     private Double rating = 0.0;
 
     @Column(name = "total_ratings")
     private Integer totalRatings = 0;
 
-    @Column(name = "is_active")
+    @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
     private String imageUrl;

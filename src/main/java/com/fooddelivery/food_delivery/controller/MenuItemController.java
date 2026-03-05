@@ -12,8 +12,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/menu")
-@CrossOrigin(origins = "*")
-public class MenuController {
+@CrossOrigin(origins = "http://localhost:3000")
+public class MenuItemController {
 
     @Autowired
     private MenuItemRepository menuItemRepository;
@@ -90,7 +90,7 @@ public class MenuController {
             menuItem.setPrice(menuItemDetails.getPrice());
             menuItem.setImageUrl(menuItemDetails.getImageUrl());
             menuItem.setCategory(menuItemDetails.getCategory());
-            menuItem.setIsVeg(menuItemDetails.getIsVegetarian());
+            menuItem.setIsVeg(menuItemDetails.getIsVeg());
             menuItem.setIsAvailable(menuItemDetails.getIsAvailable());
             menuItem.setPreparationTime(menuItemDetails.getPreparationTime());
 

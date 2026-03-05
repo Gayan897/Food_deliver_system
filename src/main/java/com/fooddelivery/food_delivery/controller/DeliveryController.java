@@ -14,10 +14,25 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/delivery")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class DeliveryController {
+
     @Autowired
     private DeliveryService service;
+
+    // ✅ ADD THIS: GET ALL DELIVERY PERSONS
+    @GetMapping
+    public ResponseEntity<List<DeliveryPersonResponse>> getAllDeliveryPersons() {
+        try {
+            System.out.println("🚴 Fetching all delivery persons...");
+            List<DeliveryPersonResponse> persons = service.getAllDeliveryPersons();
+            System.out.println("✅ Found " + persons.size() + " delivery persons");
+            return ResponseEntity.ok(persons);
+        } catch (Exception e) {
+            System.err.println("❌ Error fetching delivery persons: " + e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody DeliveryPersonRequest request) {
@@ -25,7 +40,8 @@ public class DeliveryController {
             DeliveryPersonResponse response = service.registerDeliveryPerson(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -35,7 +51,8 @@ public class DeliveryController {
             DeliveryPersonResponse response = service.getById(id);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -48,10 +65,16 @@ public class DeliveryController {
     public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestBody Map<String, Boolean> request) {
         try {
             Boolean isAvailable = request.get("isAvailable");
+            System.out.println("🔄 Updating availability for delivery person " + id + " to: " + isAvailable);
+
             DeliveryPersonResponse response = service.updateAvailability(id, isAvailable);
+
+            System.out.println("✅ Availability updated successfully");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            System.err.println("❌ Error updating availability: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -63,7 +86,41 @@ public class DeliveryController {
             DeliveryPersonResponse response = service.updateLocation(id, lat, lng);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateDeliveryPerson(
+            @PathVariable Long id,
+            @Valid @RequestBody DeliveryPersonRequest request) {
+        try {
+            System.out.println("🔄 Updating delivery person: " + id);
+
+            DeliveryPersonResponse response = service.updateDeliveryPerson(id, request);
+
+            System.out.println("✅ Delivery person updated successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.err.println("❌ Error updating delivery person: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    // ✅ ADD THIS: DELETE DELIVERY PERSON
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteDeliveryPerson(@PathVariable Long id) {
+        try {
+            System.out.println("🗑️ Deleting delivery person: " + id);
+            service.deleteDeliveryPerson(id);
+            System.out.println("✅ Delivery person deleted successfully");
+            return ResponseEntity.ok(Map.of("message", "Delivery person deleted successfully"));
+        } catch (Exception e) {
+            System.err.println("❌ Error deleting: " + e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 }

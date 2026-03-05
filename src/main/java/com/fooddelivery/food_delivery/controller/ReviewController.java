@@ -1,4 +1,4 @@
-package com.restaurant_service.Restaurant_Service_Application.controller;
+package com.fooddelivery.food_delivery.controller;
 
 import com.fooddelivery.food_delivery.dto.ReviewRequest;
 import com.fooddelivery.food_delivery.entity.Review;

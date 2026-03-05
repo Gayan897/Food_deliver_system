@@ -1,45 +1,70 @@
 package com.fooddelivery.food_delivery.service;
 
-import com.fooddelivery.food_delivery.dto.SendNotificationRequest;
 import com.fooddelivery.food_delivery.entity.Notification;
 import com.fooddelivery.food_delivery.repository.NotificationRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class NotificationService {
+
     @Autowired
-    private NotificationRepository repository;
+    private NotificationRepository notificationRepository;
 
-    @Transactional
-    public Notification sendNotification(SendNotificationRequest request) {
-        Notification notification = new Notification();
-        notification.setUserId(request.getUserId());
-        notification.setType(Notification.NotificationType.valueOf(request.getType().toUpperCase()));
-        notification.setTitle(request.getTitle());
-        notification.setMessage(request.getMessage());
-        notification.setOrderId(request.getOrderId());
-        notification.setIsRead(false);
-
-        // Here you would integrate with actual email/SMS/push services
-        System.out.println("📧 Sending notification to user: " + request.getUserId());
-
-        return repository.save(notification);
-    }
-
+    // Get all notifications for a user
     public List<Notification> getUserNotifications(Long userId) {
-        return repository.findByUserIdOrderByCreatedAtDesc(userId);
+        return notificationRepository.findByUserIdOrderByCreatedAtDesc(userId);
     }
 
+    // Get unread notifications for a user
+    public List<Notification> getUnreadNotifications(Long userId) {
+        return notificationRepository.findByUserIdAndIsReadFalseOrderByCreatedAtDesc(userId);
+    }
+
+    // Get unread count
+    public Long getUnreadCount(Long userId) {
+        return notificationRepository.countByUserIdAndIsReadFalse(userId);
+    }
+
+    // Create notification
     @Transactional
-    public Notification markAsRead(Long id) {
-        Notification notification = repository.findById(id)
+    public Notification createNotification(Notification notification) {
+        System.out.println("📬 Creating notification for user: " + notification.getUserId());
+        return notificationRepository.save(notification);
+    }
+
+    // Mark as read
+    @Transactional
+    public Notification markAsRead(Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new RuntimeException("Notification not found"));
         notification.setIsRead(true);
-        return repository.save(notification);
+        return notificationRepository.save(notification);
     }
 
+    // Mark all as read
+    @Transactional
+    public void markAllAsRead(Long userId) {
+        List<Notification> notifications = notificationRepository
+                .findByUserIdAndIsReadFalseOrderByCreatedAtDesc(userId);
+        notifications.forEach(n -> n.setIsRead(true));
+        notificationRepository.saveAll(notifications);
+    }
+
+    // Delete notification
+    @Transactional
+    public void deleteNotification(Long notificationId) {
+        notificationRepository.deleteById(notificationId);
+    }
+
+    // Delete all for user
+    @Transactional
+    public void deleteAllNotifications(Long userId) {
+        List<Notification> notifications = notificationRepository
+                .findByUserIdOrderByCreatedAtDesc(userId);
+        notificationRepository.deleteAll(notifications);
+    }
 }

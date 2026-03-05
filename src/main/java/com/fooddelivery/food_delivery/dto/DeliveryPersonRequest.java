@@ -23,6 +23,8 @@ public class DeliveryPersonRequest {
     @NotBlank(message = "License number is required")
     private String licenseNumber;
 
+    private Double rating;
+
     // Getters and Setters
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -41,4 +43,7 @@ public class DeliveryPersonRequest {
 
     public String getLicenseNumber() { return licenseNumber; }
     public void setLicenseNumber(String licenseNumber) { this.licenseNumber = licenseNumber; }
+
+    public Double getRating() { return rating; }
+    public void setRating(Double rating) { this.rating = rating; }
 }

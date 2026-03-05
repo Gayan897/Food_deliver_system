@@ -2,14 +2,8 @@ package com.fooddelivery.food_delivery.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "order_items")
@@ -18,8 +12,10 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // ✅ ADD @JsonIgnore HERE TO BREAK CIRCULAR REFERENCE
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
+    @JsonIgnore  // ← THIS FIXES THE CIRCULAR REFERENCE
     private Order order;
 
     @Column(name = "menu_item_id", nullable = false)
@@ -68,5 +64,3 @@ public class OrderItem {
     public String getSpecialRequests() { return specialRequests; }
     public void setSpecialRequests(String specialRequests) { this.specialRequests = specialRequests; }
 }
-
-
